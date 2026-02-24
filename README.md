@@ -11,27 +11,9 @@ This iteration delivers:
 - Phase 3: Feast feature repository with Postgres offline source + Redis online store and materialization commands.
 - Phase 4: reproducible training pipeline using Feast historical features, MLflow run logging, model registration, and promotion gating.
 - Phase 5: FastAPI serving API fetching Feast online features and loading the Production model from MLflow registry.
+- Phase 6: drift detection job with PSI metrics, JSON/HTML reports, MLflow logging, and alert stub.
 
-## Target Repository Layout
-
-```text
-.
-├── infra/
-├── feature_store/
-├── training/
-├── serving/
-├── drift/
-├── shared/
-├── tests/
-├── .github/workflows/
-├── docs/
-├── scripts/
-├── pyproject.toml
-├── Makefile
-└── README.md
-```
-
-## Quickstart (Current: Tooling + Infra + Feature Store + Training + Serving)
+## Quickstart (Current: Tooling + Infra + Feature Store + Training + Serving + Drift)
 
 ```bash
 cp .env.example .env
@@ -44,6 +26,7 @@ make feast-materialize
 make train-run
 make model-promote
 make serve-run
+make drift-run
 ```
 
 ### Serving Endpoints
@@ -52,22 +35,11 @@ make serve-run
 - Metrics: `GET http://localhost:8000/metrics`
 - Predict: `POST http://localhost:8000/predict` with body `{"entity_id": 1}`
 
-### Infra Endpoints
-- MLflow: `http://localhost:5001`
-- MinIO API: `http://localhost:9000`
-- MinIO Console: `http://localhost:9001`
-- Prometheus: `http://localhost:9090`
-- Grafana: `http://localhost:3000`
-
-## Training Notes
-- Training script fetches historical features from Feast, trains logistic regression, logs metrics/params to MLflow, and registers model name from `MODEL_NAME`.
-- Promotion script evaluates latest model run's F1 metric against `PROMOTION_MIN_F1` and promotes to `Production` when threshold passes.
-
-## Serving Notes
-- Serving loads model URI `models:/<MODEL_NAME>/Production` from MLflow Registry.
-- Serving fetches online features from Feast Redis store and exposes Prometheus metrics for request count and latency.
+### Drift Outputs
+- JSON report: `drift/reports/drift_report.json`
+- HTML report: `drift/reports/drift_report.html`
 
 ## Next Iterations
 
-- Phase 6: drift detection job, report artifacts, and alerting stub.
-- Phase 7+: model CI/CD and deploy/smoke workflows.
+- Phase 7: model CI/CD workflows (lint/test/build/integration/deploy-smoke).
+- Phase 8: polish docs, dashboards, and demo script.

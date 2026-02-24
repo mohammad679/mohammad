@@ -1,6 +1,6 @@
 SHELL := /bin/bash
 
-.PHONY: install format lint test check init infra-up infra-down infra-logs feast-bootstrap feast-apply feast-materialize train-run model-promote serve-run
+.PHONY: install format lint test check init infra-up infra-down infra-logs feast-bootstrap feast-apply feast-materialize train-run model-promote serve-run drift-run
 
 install:
 	poetry install
@@ -12,7 +12,7 @@ format:
 lint:
 	poetry run ruff check .
 	poetry run black --check .
-	poetry run mypy shared training serving
+	poetry run mypy shared training serving drift
 
 test:
 	poetry run pytest
@@ -49,3 +49,6 @@ model-promote:
 
 serve-run:
 	poetry run python -m serving.main
+
+drift-run:
+	poetry run python drift/scripts/run_drift.py
