@@ -1,6 +1,6 @@
 SHELL := /bin/bash
 
-.PHONY: install format lint test check init infra-up infra-down infra-logs
+.PHONY: install format lint test check init infra-up infra-down infra-logs feast-bootstrap feast-apply feast-materialize
 
 install:
 	poetry install
@@ -31,3 +31,12 @@ infra-down:
 
 infra-logs:
 	docker compose --env-file .env -f infra/docker-compose.yml logs -f --tail=100
+
+feast-bootstrap:
+	poetry run python feature_store/scripts/bootstrap_offline_store.py
+
+feast-apply:
+	cd feature_store/repo && poetry run feast apply
+
+feast-materialize:
+	cd feature_store/repo && poetry run feast materialize-incremental $$(date -u +%Y-%m-%dT%H:%M:%S)
