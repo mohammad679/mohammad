@@ -1,6 +1,6 @@
 SHELL := /bin/bash
 
-.PHONY: install format lint test check init infra-up infra-down infra-logs feast-bootstrap feast-apply feast-materialize
+.PHONY: install format lint test check init infra-up infra-down infra-logs feast-bootstrap feast-apply feast-materialize train-run model-promote
 
 install:
 	poetry install
@@ -12,7 +12,7 @@ format:
 lint:
 	poetry run ruff check .
 	poetry run black --check .
-	poetry run mypy shared
+	poetry run mypy shared training
 
 test:
 	poetry run pytest
@@ -40,3 +40,9 @@ feast-apply:
 
 feast-materialize:
 	cd feature_store/repo && poetry run feast materialize-incremental $$(date -u +%Y-%m-%dT%H:%M:%S)
+
+train-run:
+	poetry run python training/scripts/run_training.py
+
+model-promote:
+	poetry run python training/scripts/promote_model.py
