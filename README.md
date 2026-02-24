@@ -7,6 +7,7 @@ A portfolio-ready end-to-end MLOps platform demonstrating experiment tracking, f
 This iteration delivers:
 - Phase 0: concise PRD, architecture, data flow, and basic threat model.
 - Phase 1: monorepo skeleton, Python tooling (Poetry, pre-commit, lint/test), and initial tests.
+- Phase 2: local infrastructure with Docker Compose for Postgres, Redis, MinIO, MLflow, Prometheus, and Grafana (all with health checks).
 
 ## Target Repository Layout
 
@@ -71,15 +72,23 @@ This iteration delivers:
  Observability: Prometheus + Grafana scrape app/infra metrics
 ```
 
-## Quickstart (Tooling Only, current phase)
+## Quickstart (Current: Tooling + Infra)
 
 ```bash
+cp .env.example .env
 make init
 make check
+make infra-up
 ```
+
+### Infra Endpoints
+- MLflow: `http://localhost:5001`
+- MinIO API: `http://localhost:9000`
+- MinIO Console: `http://localhost:9001`
+- Prometheus: `http://localhost:9090`
+- Grafana: `http://localhost:3000`
 
 ## Next Iterations
 
-- Phase 2: Docker Compose infrastructure (Postgres, Redis, MLflow, MinIO optional, Prometheus, Grafana).
-- Phase 3+: Feast definitions, training, serving, drift, CI/CD workflows.
-
+- Phase 3: Feast feature repository definitions + apply/materialize workflows.
+- Phase 4+: training, serving, drift, model CI/CD workflows.

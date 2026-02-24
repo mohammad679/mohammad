@@ -1,6 +1,6 @@
 SHELL := /bin/bash
 
-.PHONY: install format lint test check init
+.PHONY: install format lint test check init infra-up infra-down infra-logs
 
 install:
 	poetry install
@@ -22,3 +22,12 @@ check: lint test
 init:
 	poetry install
 	poetry run pre-commit install
+
+infra-up:
+	docker compose --env-file .env -f infra/docker-compose.yml up -d
+
+infra-down:
+	docker compose --env-file .env -f infra/docker-compose.yml down -v
+
+infra-logs:
+	docker compose --env-file .env -f infra/docker-compose.yml logs -f --tail=100
