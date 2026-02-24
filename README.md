@@ -10,6 +10,7 @@ This iteration delivers:
 - Phase 2: local infrastructure with Docker Compose for Postgres, Redis, MinIO, MLflow, Prometheus, and Grafana (all with health checks).
 - Phase 3: Feast feature repository with Postgres offline source + Redis online store and materialization commands.
 - Phase 4: reproducible training pipeline using Feast historical features, MLflow run logging, model registration, and promotion gating.
+- Phase 5: FastAPI serving API fetching Feast online features and loading the Production model from MLflow registry.
 
 ## Target Repository Layout
 
@@ -30,7 +31,7 @@ This iteration delivers:
 └── README.md
 ```
 
-## Quickstart (Current: Tooling + Infra + Feature Store + Training)
+## Quickstart (Current: Tooling + Infra + Feature Store + Training + Serving)
 
 ```bash
 cp .env.example .env
@@ -42,7 +43,14 @@ make feast-apply
 make feast-materialize
 make train-run
 make model-promote
+make serve-run
 ```
+
+### Serving Endpoints
+- API docs: `http://localhost:8000/docs`
+- Health: `GET http://localhost:8000/health`
+- Metrics: `GET http://localhost:8000/metrics`
+- Predict: `POST http://localhost:8000/predict` with body `{"entity_id": 1}`
 
 ### Infra Endpoints
 - MLflow: `http://localhost:5001`
@@ -51,16 +59,15 @@ make model-promote
 - Prometheus: `http://localhost:9090`
 - Grafana: `http://localhost:3000`
 
-## Feature Store Notes
-- Feast repo path: `feature_store/repo`.
-- Offline source table: `driver_stats` in Postgres.
-- Bootstrap script uses sklearn breast cancer dataset and writes deterministic feature columns.
-
 ## Training Notes
 - Training script fetches historical features from Feast, trains logistic regression, logs metrics/params to MLflow, and registers model name from `MODEL_NAME`.
 - Promotion script evaluates latest model run's F1 metric against `PROMOTION_MIN_F1` and promotes to `Production` when threshold passes.
 
+## Serving Notes
+- Serving loads model URI `models:/<MODEL_NAME>/Production` from MLflow Registry.
+- Serving fetches online features from Feast Redis store and exposes Prometheus metrics for request count and latency.
+
 ## Next Iterations
 
-- Phase 5: serving API loading Production model + online features.
-- Phase 6+: drift detection and model CI/CD workflows.
+- Phase 6: drift detection job, report artifacts, and alerting stub.
+- Phase 7+: model CI/CD and deploy/smoke workflows.
