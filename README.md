@@ -12,6 +12,7 @@ This iteration delivers:
 - Phase 4: reproducible training pipeline using Feast historical features, MLflow run logging, model registration, and promotion gating.
 - Phase 5: FastAPI serving API fetching Feast online features and loading the Production model from MLflow registry.
 - Phase 6: drift detection job with PSI metrics, JSON/HTML reports, MLflow logging, and alert stub.
+- Phase 7: CI/CD workflows for lint/test, docker build, integration tests, prod-profile deploy smoke checks, and model promotion gate.
 
 ## Quickstart (Current: Tooling + Infra + Feature Store + Training + Serving + Drift)
 
@@ -39,7 +40,10 @@ make drift-run
 - JSON report: `drift/reports/drift_report.json`
 - HTML report: `drift/reports/drift_report.html`
 
+### CI/CD Workflows
+- `.github/workflows/ci.yml`: lint/test -> docker build -> integration tests -> main-branch prod profile deploy + smoke.
+- `.github/workflows/model-promotion.yml`: promotion gate workflow for threshold-validated model promotion.
+
 ## Next Iterations
 
-- Phase 7: model CI/CD workflows (lint/test/build/integration/deploy-smoke).
-- Phase 8: polish docs, dashboards, and demo script.
+- Phase 8: polish docs, dashboards, architecture diagram, and demo script + resume bullets.

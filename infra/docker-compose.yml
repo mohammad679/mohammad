@@ -144,6 +144,33 @@ services:
       retries: 10
     networks: [mlp]
 
+  serving:
+    build:
+      context: ..
+      dockerfile: serving/Dockerfile
+    container_name: mlp-serving
+    env_file:
+      - ../.env
+    environment:
+      FEAST_REPO_PATH: /app/feature_store/repo
+      MLFLOW_TRACKING_URI: http://mlflow:5000
+      SERVING_HOST: 0.0.0.0
+      SERVING_PORT: 8000
+    ports:
+      - "${SERVING_PORT}:8000"
+    depends_on:
+      redis:
+        condition: service_healthy
+      mlflow:
+        condition: service_healthy
+    profiles: ["prod"]
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks: [mlp]
+
 volumes:
   postgres_data:
   redis_data:

@@ -1,6 +1,6 @@
 SHELL := /bin/bash
 
-.PHONY: install format lint test check init infra-up infra-down infra-logs feast-bootstrap feast-apply feast-materialize train-run model-promote serve-run drift-run
+.PHONY: install format lint test check init infra-up infra-down infra-logs feast-bootstrap feast-apply feast-materialize train-run model-promote serve-run drift-run integration-test smoke-test
 
 install:
 	poetry install
@@ -52,3 +52,9 @@ serve-run:
 
 drift-run:
 	poetry run python drift/scripts/run_drift.py
+
+integration-test:
+	bash scripts/integration_test.sh
+
+smoke-test:
+	bash scripts/smoke_test.sh
